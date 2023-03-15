@@ -2,10 +2,12 @@
   "name": "split-in-lines",
   "private": false,
   "version": "0.0.1",
-  "author": "Keshia Mukenge : keshiamukenge.fr",
+  "author": "Keshia Mukenge (keshiamukenge.fr)",
   "description": "Split and wrap each lines of your text in html tag",
+  "repository": "keshiamukenge/split-in-lines",
   "type": "module",
-  "main": "./lib/index.cjs.js",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
     "lib"
