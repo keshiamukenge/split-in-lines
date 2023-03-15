@@ -3,17 +3,28 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "node"],
+    "allowJs": false,
     "moduleResolution": "Node",
     "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+		"strictPropertyInitialization": false,
+    "declaration": true,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    },
+    "outDir": "./lib"
   },
-  "include": ["src"]
+  "include": ["./src"],
+  "exclude": ["node_modules"]
 }
