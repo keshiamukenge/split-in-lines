@@ -6,14 +6,14 @@ It is very useful to create text animations.
 
 ## Installation
 `````
-npm install ...
+npm install lines-split
 `````
 
 ## Usage
 `````
-import SplitInLines from '...'
+import SplitInLines from 'lines-split';
 
-new SplitInLines('.text', 'center')
+new SplitInLines('.text', 'center');
 `````
 ## Instance options
 | Option | Type | Default | Description |
