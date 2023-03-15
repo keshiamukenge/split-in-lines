@@ -3,7 +3,7 @@ type TextAlignType = 'left' | 'right' | 'center';
 
 export default class SplitInLines {
   element: HTMLElement | null;
-  selector: SelectorType;
+  target: SelectorType;
   textAlign: TextAlignType;
   elementParameters: {
     el: HTMLElement;
@@ -20,13 +20,13 @@ export default class SplitInLines {
 
 	constructor(selector: SelectorType, textAlign: TextAlignType = 'left') {
     this.element = null;
-    this.selector = selector;
+    this.target = selector;
     this.textAlign = textAlign;
     
-    if(typeof this.selector === 'string') { 
-		  this.element = document.querySelector(this.selector);
+    if(typeof this.target === 'string') { 
+		  this.element = document.querySelector(this.target);
     } else {
-      this.element = this.selector;
+      this.element = this.target;
     }
     
     if(!this.element) return;
@@ -106,10 +106,10 @@ export default class SplitInLines {
 	private injectInHtml() {
     let newHtmlElement: HTMLElement | null = null;
     
-    if(typeof this.selector === 'string') {
-		  newHtmlElement = document.querySelector(this.selector);
+    if(typeof this.target === 'string') {
+		  newHtmlElement = document.querySelector(this.target);
      } else {
-      newHtmlElement = this.selector;
+      newHtmlElement = this.target;
      }
     
     if(!newHtmlElement) return;
