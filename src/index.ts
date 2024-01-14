@@ -1,159 +1,125 @@
-type SelectorType = string | HTMLElement | null;
-type TextAlignType = 'left' | 'right' | 'center';
+import gsap, { Expo } from 'gsap'
+
+type TargetType = HTMLElement | undefined;
+
+declare global {
+  interface HTMLElement {
+    splitInLines?: SplitInLines;
+  }
+}
 
 export default class SplitInLines {
-  element: HTMLElement | null;
-  target: SelectorType;
-  textAlign: TextAlignType;
-  elementParameters: {
-    el: HTMLElement;
-    text: string;
-    width: number;
-  };
-  spans: {
-    el: HTMLElement;
-    top: number;
-  }[];
-  lines: string[];
-  isFirstResize: boolean;
-  words: string[];
+	element: HTMLElement
+	isVisible: boolean
+	params: {
+		width: number
+		words: string[]
+		lines: NodeListOf<HTMLSpanElement> | []
+	}
 
-	constructor(selector: SelectorType, textAlign: TextAlignType = 'left') {
-    this.element = null;
-    this.target = selector;
-    this.textAlign = textAlign;
-    
-    if(typeof this.target === 'string') { 
-		  this.element = document.querySelector(this.target);
-    } else {
-      this.element = this.target;
+	constructor(target: TargetType) {
+		if(!target) {
+			console.warn('Target is null or undefined')
+			
+			return
+		} else {
+			this.params = {
+				width: 0,
+				words: [],
+				lines: []
+			}
+			this.element = target
+			this.isVisible = false;
+			this.params.words = this.element.innerText.split(' ')
+			this.create()
+			
+			this.element.splitInLines = this
+		}
+	}
+
+	private create() {
+		this.params.width = this.element.getBoundingClientRect().width
+
+		this.clearElementContent()
+		this.createLines()
+	}
+
+	private clearElementContent() {
+		this.element.innerText = ''
+	}
+
+	private removeLastWord(text: string): string {
+    var lastSpace = text.lastIndexOf(' ')
+
+    if (lastSpace !== -1) {
+      return text.substring(0, lastSpace)
     }
-    
-    if(!this.element) return;
-    
-		this.element.style.display = "flex";
-		this.element.style.flexWrap = "wrap";
 
-		this.elementParameters = {
-			el: this.element,
-			text: this.element.innerText,
-      width: this.element.getBoundingClientRect().width
-		};
-		this.spans = [];
-		this.lines = [];
-    this.isFirstResize = true;
-
-		this.splitAndWrapWords();
-		this.setSpansTop();
-		this.createLines();
-		this.injectInHtml();
-
-    this.elementParameters.el.style.justifyContent = this.textAlign;
-
-    this.onWindowResize();
+    return ''
 	}
 
-	private splitAndWrapWords() {
-		this.words = this.elementParameters.text.split(/(\s+)/);
+	private createEmptyLine() {
+		let container = document.createElement('span')
+		let content = document.createElement('span')
 
-		this.words.forEach(word => {
-			const span = document.createElement("span");
-			span.style.paddingRight = '0.15rem';
-  		span.textContent = word;
-      
-			this.spans = [
-				...this.spans,
-				{
-					el: span,
-          top: 0,
-				}
-			];
-      
-			this.elementParameters.el.append(span);
-		});
-	}
+		container.style.display = content.style.display = 'block'
+		container.style.overflow = 'hidden'
+		content.style.transform = 'translateY(100%)'
 
-	private setSpansTop() {
-    if(this.spans.length === 0) return;
-    
-    this.spans.forEach(item => item.top = item.el.getBoundingClientRect().top);
+		container.appendChild(content)
+
+		return {
+			container,
+			content
+		}
 	}
 
 	private createLines() {
-		let newLine = "";
-		let currentLineId = 0;
+		let line = this.createEmptyLine()
+		let currentLineHeight = 0
+		let previousLineHeight = 0
 
-		for(let i = 0; i < this.spans.length; i++) {
-			let currentId = i;
-			let prevId = i === 0 ? i : i - 1;
-      
-      
-      if(this.spans[prevId].top < this.spans[currentId].top) {
-        this.lines = [...this.lines, newLine];
-        
-        newLine = this.spans[currentId].el.textContent || "";
-        this.lines[currentLineId] = this.lines[currentLineId].trim()
-        currentLineId += 1;
-      } else {
-        newLine += this.spans[i].el.textContent;
-      }
-		}
-
-		this.lines = [...this.lines, newLine];
-		this.lines[currentLineId] = this.lines[currentLineId].trim()
-	}
-
-	private injectInHtml() {
-    let newHtmlElement: HTMLElement | null = null;
-    
-    if(typeof this.target === 'string') {
-		  newHtmlElement = document.querySelector(this.target);
-     } else {
-      newHtmlElement = this.target;
-     }
-    
-    if(!newHtmlElement) return;
-
-		 newHtmlElement.textContent = "";
-
-		 this.lines.forEach(line => {
-			 const spanContent = document.createElement("span");
-			 spanContent.style.display = "block";
-			 spanContent.textContent = line + '\xa0';
+		this.params.words.forEach((word, id) => {
+			line.content.innerText = `${line.content.innerText} ${word}`	
+			this.element.appendChild(line.container)
+			currentLineHeight = line.container.getBoundingClientRect().height
 			
-			 const spanContainer = document.createElement("span");
-			 spanContainer.style.overflow = "hidden";
-			 spanContainer.style.display = "block";
-			 spanContainer.append(spanContent);
+			if(previousLineHeight > 0 && currentLineHeight > previousLineHeight) {
+				const text = this.removeLastWord(line.content.innerText)
+				line.content.innerText = text + ' '
 
-			 newHtmlElement?.append(spanContainer)
-		 })
+				// Add new line if latest word doesn't attached on DOM
+				if(this.params.words.length === id + 1) {
+					const latestLine = this.createEmptyLine()
+					latestLine.content.innerText = word
+					this.element.appendChild(latestLine.container)
+
+					return
+				}
+
+				line = this.createEmptyLine()
+				line.content.textContent = word
+			}
+				
+			previousLineHeight = currentLineHeight
+		})
+
+		this.params.lines = this.element.querySelectorAll('span span')
 	}
-  
-  private onWindowResize() {
-    let elementBaseWidth = this.isFirstResize ? this.elementParameters.width : this.elementParameters.el.getBoundingClientRect().width;
-    
-    window.addEventListener('resize', () => {
-      let currentElementWidth = this.elementParameters.el.getBoundingClientRect().width;
-      
-      if(elementBaseWidth !== currentElementWidth) { 
-        this.elementParameters.el.replaceChildren();
-        
-        this.spans.forEach(span => {
-          this.elementParameters.el.append(span.el);
-          span.top = span.el.getBoundingClientRect().top;
-        });
 
-        this.lines = [];
-        this.createLines();
-        this.injectInHtml()
+	public slideUp() {
+		gsap.to(this.params.lines, {
+			y: 0,
+			duration: 1,
+			stagger: 0.05,
+			ease: Expo.easeOut,
+			onComplete: () => {
+				this.isVisible = true
+			}
+		})
+	}
 
-        elementBaseWidth = currentElementWidth;
-      }
-      
-      if(this.isFirstResize) {
-        this.isFirstResize = false;
-      }
-    })
-  }
+	public resize() {
+		this.create()
+	}
 }

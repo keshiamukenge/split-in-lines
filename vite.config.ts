@@ -28,7 +28,7 @@ export default defineConfig({
     },
 		outDir: "lib",
     rollupOptions: {
-      external: [],
+      external: ['gsap'],
       plugins: [
         typescriptPaths({
           preserveExtensions: true,
