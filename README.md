@@ -11,12 +11,26 @@ npm install lines-split
 
 ## Usage
 `````
-import SplitInLines from 'lines-split';
+import SplitInLines from 'lines-split'
 
-new SplitInLines('.text', 'center');
+const paragraph = document.querySelector('p')
+
+new SplitInLines(paragraph)
 `````
-## Instance options
+## Instance settings
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `target` | `string` or `HTMLElement` | `null` | Element to split |
-| `textAlign` | `string` | `'left'` | Text alignement, possible value : <ul><li>`left`</li><li>`right`</li><li>`center`</li></ul>|
+| `target` | `HTMLElement` | `undefined` | Text element to split |
+
+## Instance props
+| Property | Type | Description |
+| --- | --- | --- |
+| `element` | `HTMLElement` | Splited element |
+| `isVisible` | `boolean` | Whether or not `slideUp()` animation is completed. Set to `true` when animation is completed. |
+| `params` | `object` | Instance parameters : <ul><li>`width: number`</li><li>`words: string[]`</li><li>`lines: NodeListOf<HTMLSpanElement>`</li></ul>` |
+
+## Instance methods
+| Option | Description |
+| --- | --- |
+| `slideUp()` | Basic text animation using gsap |
+| `resize()` | Recreate each line in relation to element's width |
