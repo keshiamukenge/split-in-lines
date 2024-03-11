@@ -1,4 +1,4 @@
-import gsap, { Expo } from 'gsap'
+import { easeOutExpo } from 'easings-css'
 
 type TargetType = HTMLElement | undefined;
 
@@ -64,7 +64,7 @@ export default class SplitInLines {
 
 		container.style.display = content.style.display = 'block'
 		container.style.overflow = 'hidden'
-		content.style.transform = 'translateY(100%)'
+		content.style.transform = 'translate3d(0, 100%, 0)'
 
 		container.appendChild(content)
 
@@ -108,15 +108,13 @@ export default class SplitInLines {
 	}
 
 	public slideUp() {
-		gsap.to(this.params.lines, {
-			y: 0,
-			duration: 1,
-			stagger: 0.05,
-			ease: Expo.easeOut,
-			onComplete: () => {
-				this.isVisible = true
-			}
-		})
+		for(let i = 0; i < this.params.lines.length; i++) {
+			this.params.lines[i].style.willChange = 'transform'
+			this.params.lines[i].style.transition = `1.5s ${easeOutExpo} ${i * 0.04}s`
+			this.params.lines[i].style.transform = 'translate3d(0, 0, 0)'
+		}
+
+		this.isVisible = true
 	}
 
 	public resize() {

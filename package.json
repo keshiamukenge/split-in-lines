@@ -1,7 +1,7 @@
 {
   "name": "lines-split",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Keshia Mukenge (keshiamukenge.fr)",
   "description": "Split and wrap each lines of your text in html tag",
   "repository": {
@@ -27,7 +27,7 @@
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
   },
-  "peerDependencies": {
-    "gsap": "^3.12.4"
+  "dependencies": {
+    "easings-css": "^2.1.1"
   }
 }

@@ -32,5 +32,5 @@ new SplitInLines(paragraph)
 ## Instance methods
 | Option | Description |
 | --- | --- |
-| `slideUp()` | Basic text animation using gsap |
+| `slideUp()` | Basic text animation |
 | `resize()` | Recreate each line in relation to element's width |
