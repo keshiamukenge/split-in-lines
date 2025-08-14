@@ -1,0 +1,18 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	min-height: 100vh;
+	font-family: Helvetica;
+	background-color: #1E201E;
+	color: #ECDFCC;
+}
+
+#app {
+	width: 100vw;
+	height: 100vh;
+}
