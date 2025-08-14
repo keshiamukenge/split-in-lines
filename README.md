@@ -5,12 +5,12 @@
 It is very useful to create text animations.
 
 ## Installation
-`````
+`````bash
 pnpm install lines-split
 `````
 
 ## Usage
-`````
+`````javascript
 import SplitInLines from 'lines-split'
 
 const paragraph = document.querySelector('p')
