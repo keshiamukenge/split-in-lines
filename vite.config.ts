@@ -5,6 +5,8 @@ import path from 'path'
 export default defineConfig({
   root: 'demo',
 
+  base: 'split-in-lines',
+
 	plugins: [vue()],
 
   resolve: {
